@@ -582,19 +582,16 @@ hr.soft{border:none;border-top:1px dashed var(--line);margin:18px 0}
     });
   });
 
-  /* ---------- CTA → trigger OrderOnline form button ---------- */
-  function triggerOO(){
-    var f=document.querySelector(".ooef");
-    if(f){
-      var b=f.querySelector('button,a,[role="button"]');
-      if(b){b.click();return true;}
-    }
-    return false;
+  /* ---------- CTA → scroll straight to the order form ---------- */
+  function goToForm(){
+    var f=document.querySelector(".ooef")||document.getElementById("order");
+    if(!f)return false;
+    f.scrollIntoView({behavior:"smooth",block:"center"});
+    return true;
   }
   [].forEach.call(document.querySelectorAll("[data-oo-trigger]"),function(el){
     el.addEventListener("click",function(e){
-      // try to open the order form directly; if not loaded yet, fall back to scrolling to #order
-      if(triggerOO()){e.preventDefault();}
+      if(goToForm())e.preventDefault();
     });
   });
 
