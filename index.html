@@ -598,32 +598,26 @@ hr.soft{border:none;border-top:1px dashed var(--line);margin:18px 0}
     });
   });
 
-  /* ---------- ANTI-CAPTURE / ANTI-INSPECT DETERRENTS ---------- */
+  /* ---------- ANTI-COPY DETERRENTS (light touch — must NOT block real buyers) ---------- */
   var shield=document.getElementById("shield");
-  // block context menu, drag, selection
+  // block drag/select of content + images
   ["dragstart","selectstart"].forEach(function(ev){document.addEventListener(ev,function(e){e.preventDefault();});});
-  // block common devtools / save / print / screenshot shortcuts
+  // block common inspect / view-source / save shortcuts (deterrent for casual users only)
   document.addEventListener("keydown",function(e){
     var k=e.key||"";
     if(k==="F12"||
        (e.ctrlKey&&e.shiftKey&&/^[IJC]$/i.test(k))||
-       (e.ctrlKey&&/^[USP]$/i.test(k))||
+       (e.ctrlKey&&/^[US]$/i.test(k))||
        (e.metaKey&&e.altKey&&/^[IJC]$/i.test(k))){
       e.preventDefault();e.stopPropagation();return false;
     }
     if(k==="PrintScreen"){
       try{navigator.clipboard&&navigator.clipboard.writeText("");}catch(_){}
-      flash();
+      shield.classList.add("on");setTimeout(function(){shield.classList.remove("on");},900);
     }
   });
-  // brief blackout on suspected capture / tab leave
-  function flash(){shield.classList.add("on");setTimeout(function(){shield.classList.remove("on");},1200);}
-  document.addEventListener("visibilitychange",function(){if(document.hidden)shield.classList.add("on");else shield.classList.remove("on");});
-  // crude devtools-open detection (desktop only; harmless on mobile)
-  setInterval(function(){
-    var w=window.outerWidth-window.innerWidth,h2=window.outerHeight-window.innerHeight;
-    if(w>170||h2>200){shield.classList.add("on");}else{shield.classList.remove("on");}
-  },800);
+  // NOTE: removed the visibilitychange + devtools-size blackout — they false-triggered
+  // (e.g. switching apps on mobile) and blanked the page for real buyers, killing conversions.
 })();
 </script>
 </body>
